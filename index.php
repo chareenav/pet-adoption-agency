@@ -44,15 +44,50 @@
 <script>
     $("document").ready(function(){
         
-        
-        $('#myForm').submit(function(e){
-            e.preventDefault();//no need to submit as you'll be doing AJAX on this page
-            let feels = $("input[name=feels]:checked").val();
-            let likes = $("input[name=likes]:checked").val();
-            let eats = $("input[name=eats]:checked").val();
-            let pet = "";
-            alert(feels);
+        //hide likes and eats
+        $("#pet_likes").hide();
+        $("#pet_eats").hide();
 
+      //show the like section on click of the feels radio button
+      $("#pet_feels").click(function(e){
+        $("#pet_likes").slideDown(200);
+      });
+
+      $("#pet_likes").click(function(e){
+        $("#pet_eats").slideDown(200);
+      });
+      
+    $('#myForm').submit(function(e){
+    e.preventDefault();//no need to submit as you'll be doing AJAX on this page
+            let feels = $("input[name=feels]:checked").val();//1-2
+            let likes = $("input[name=likes]:checked").val();//3-4
+            let eats = $("input[name=eats]:checked").val();//5-6
+
+          let pet = "";
+            if(feels=="fluffy" && likes=="petted" && eats=="carrots"){
+              pet = "rabbit";
+            }else if(feels=="scaly" && likes=="ridden" && eats=="pets"){
+              pet = "velociraptor"
+            }else{
+              pet = "pig";
+            }
+  
+            let output = "";
+
+          $.get( "includes/get_pet.php", { critter: pet } )
+           .done(function( data ) {
+            //alert( "Data Loaded: " + data );
+            pet = data;
+
+          output += `<p>Your pet feels ${feels}</p>`;
+          output += `<p>Your pet likes to be ${likes}</p>`;
+          output += `<p>Your pet likes to eat ${eats}</p>`;
+          output += pet;
+
+          //replace form with our data
+          $("#output").html(output);            
+
+           });
 
         });
 
